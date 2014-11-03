@@ -1,0 +1,80 @@
+// Muf.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	short intrari, in, out;
+	
+	printf("Numar intrari = ");
+	scanf_s("%d", &intrari);
+	printf("In = ");
+	scanf_s("%d", &in);
+	printf("Out = ");
+	scanf_s("%d", &out);
+
+	short etaje = log((double)intrari) / log(2.0);
+	printf("Etaje %d\n", etaje);
+	short xor_tag = in ^ out;
+	printf("XOR_Tag %d\n", xor_tag);
+
+	int i;
+	int aux;
+	printf("Rezolvare \n");
+	if (in >= 4)
+	{
+		in = in << 1;
+		in = in + 1;
+		in = in & 7;
+	}
+	int stage = in / 2;
+	for(i = etaje - 1; i >= 0; i--)
+	{
+		aux = xor_tag & (1 << i);
+		printf("Comutatorul de pe etaj %d - ", i);
+		if (aux == 0) 
+		{
+			
+			printf("Direct (C0 = 0; C1 = 0)\n");			
+			if (in >= 4)
+			{
+				in = in << 1;
+				in = in + 1;
+				in = in & 7;
+			}
+			else
+			{
+				in = in << 1;
+			}
+		}
+		else
+		{
+			printf("Invers (C0 = 1; C1 = 1)\n");
+			if (in % 2 == 0) 
+				++in;
+			else 
+				--in;
+			if (in % 2 == 1)
+			{
+				in = in >> 1;
+				in = in | 4;
+			}
+			else
+			{
+				in = in >> 1;
+			}
+		}
+		stage = in / 2;
+		
+	}
+
+	scanf_s("%d", &in);
+	return 0;
+}
+
