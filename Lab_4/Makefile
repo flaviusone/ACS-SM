@@ -6,6 +6,7 @@ all: clean build
 
 build:
 	colorgcc -o omega omega.c -Wall -lm
+	colorgcc -o benes benes.c -Wall -lm
 
 clean:
-	rm -f omega
+	rm -f omega benes
