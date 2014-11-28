@@ -8,27 +8,42 @@
 **/
 
 /*==========  Includes & Defines  ==========*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <jpeglib.h>
 #include <math.h>
-#include <time.h>
-// #include "jpeg_functions.h"
+#include <sys/time.h>
+#include "jpeg_functions.h"
+
+#define MIN2(A,B)       ((A)<(B)?(A):(B))
+#define MIN(A,B,C)     (MIN2(MIN2((A),(B)),(C)))
+
+#define MAX2(A,B)       ((A)>(B)?(A):(B))
+#define MAX(A,B,C)     (MAX2(MAX2((A),(B)),(C)))
+
 /*-----  End of Includes & Defines  ------*/
 
 int main(int argc, char **argv){
 	/*==========  Variabile declarate  ==========*/
 	struct timeval start,finish;
     double t;
+    uint8_t* image;
+    int *width,*height;
 	/*-----  End of Variabile declarate  ------*/
-
+    width = malloc(sizeof(int));
+    height = malloc(sizeof(int));
 
 	/* Read jpeg file */
+    image = read_JPEG_file(argv[1], height, width);
+    printf("Dupa fucntie %d %d\n", *width, *height);
 
 	gettimeofday(&start,0);
 
+
     /* TODO - compute RGB->HSV */
+
 
     gettimeofday(&finish,0);
 
