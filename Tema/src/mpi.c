@@ -2,7 +2,7 @@
 *
 * Author: Flavius Tirnacop
 * Grupa: 341C1
-* Fisier: simple.c
+* Fisier: mpi.c
 * Descriere: Implementare seriala transformare RGB->HSV
 *
 **/
