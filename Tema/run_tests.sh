@@ -22,16 +22,16 @@ echo -e "\nRunning test 1 - omp...\n"
 ./$OMP_OUTPUT 4 inputs/nasa_world.jpg out/nasa_world_HSV_OMP.jpg
 
 echo -e "\nRunning test 1 - mpi...\n"
-# mpiexec -n 10 ./$MPI_OUTPUT inputs/uther_small.jpg out/uther_small_HSV_MPI.jpg
-mpiexec -n 10 ./$MPI_OUTPUT inputs/nasa_world.jpg out/nasa_world_HSV_MPI.jpg
+# mpirun -n 10 ./$MPI_OUTPUT inputs/uther_small.jpg out/uther_small_HSV_MPI.jpg
+mpirun -n 10 ./$MPI_OUTPUT inputs/nasa_world.jpg out/nasa_world_HSV_MPI.jpg
 
 echo -e "\nRunning test 1 - pthreads...\n"
 # ./$PTHREADS_OUTPUT 1 inputs/uther_small.jpg out/uther_small_HSV_PTHREADS.jpg
 ./$PTHREADS_OUTPUT 8 inputs/nasa_world.jpg out/nasa_world_HSV_PTHREADS.jpg
 
 echo -e "\nRunning test 1 - hibrid...\n"
-# mpiexec -n 10 ./$HIBRID_OUTPUT inputs/uther_small.jpg out/uther_small_HSV_MPI_HIBRID.jpg
-mpiexec -n 10 ./$HIBRID_OUTPUT inputs/nasa_world.jpg out/nasa_world_HSV_HIBRID.jpg
+# mpirun -n 10 ./$HIBRID_OUTPUT inputs/uther_small.jpg out/uther_small_HSV_MPI_HIBRID.jpg
+mpirun -n 10 ./$HIBRID_OUTPUT inputs/nasa_world.jpg out/nasa_world_HSV_HIBRID.jpg
 
 echo -e "\nDone running tests"
 make clean
