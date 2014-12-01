@@ -1,4 +1,5 @@
 CC=gcc
+MPICC=mpicc
 CFLAGS = -Wall
 LDFLAGS = -ljpeg
 
@@ -23,7 +24,7 @@ build-omp:
 	$(CC) -fopenmp $(CFLAGS) $(OMP_PATH) -o $(OMP_OUTPUT) $(LDFLAGS)
 
 build-mpi:
-	$(CC) $(CFLAGS) $(MPI_PATH) -o $(MPI_OUTPUT) $(LDFLAGS)
+	$(MPICC) $(CFLAGS) $(MPI_PATH) -o $(MPI_OUTPUT) $(LDFLAGS)
 
 build-pthreads:
 	$(CC) $(CFLAGS) $(PTHREADS_PATH) -o $(PTHREADS_OUTPUT) $(LDFLAGS)

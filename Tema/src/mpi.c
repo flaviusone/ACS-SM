@@ -15,7 +15,9 @@
 #include <jpeglib.h>
 #include <math.h>
 #include <sys/time.h>
+#include "mpi.h"
 #include "jpeg_functions.h"
+
 
 #define MIN2(A,B)       ((A)<(B)?(A):(B))
 #define MIN(A,B,C)     (MIN2(MIN2((A),(B)),(C)))
@@ -74,39 +76,70 @@ void RGBtoHSV(uint8_t *src){
 int main(int argc, char **argv){
 	/*==========  Variabile declarate  ==========*/
 	struct timeval start,finish;
-    double t;
-    uint8_t* image;
-    int *width,*height;
-    int i;
+    double t;                   /* Var pentru calcul timp */
+    uint8_t* image;             /* Imaginea originala */
+    uint8_t* image_chunk;       /* Bucata de imagine pentru fiecare proces */
+    int chunk_size;             /* Dimensiune chunk proces */
+    int width,height;           /* Lungime si latime imagine */
+    int *w,*h;                  /* Aux */
+    int i, rc, numtasks, rank;  /* Aux (MPI) */
 	/*-----  End of Variabile declarate  ------*/
-    width = malloc(sizeof(int));
-    height = malloc(sizeof(int));
 
-	/* Read jpeg file */
-    image = read_JPEG_file(argv[1], height, width);
+    /*==========  MPI Inits  ==========*/
+    rc = MPI_Init(NULL, NULL);
+    if (rc != MPI_SUCCESS) {
+        printf ("Error starting MPI program. Terminating.\n");
+        MPI_Abort(MPI_COMM_WORLD, rc);
+    }
+    MPI_Comm_size(MPI_COMM_WORLD, &numtasks);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    /* Start timing */
-	gettimeofday(&start,0);
 
+    if(rank == 0)
+    {
+        w = malloc(sizeof(int));
+        h = malloc(sizeof(int));
 
-    /* Compute RGB->HSV */
-    for (i = 0; i < *width * *height; i++) {
-        RGBtoHSV(image + i * 3);
+        /* Read jpeg file */
+        image = read_JPEG_file(argv[1], h, w);
+        width = *w; free(w);
+        height = *h; free(h);
+
+        chunk_size = width * height * 3 / numtasks;
+
+        /* Start timing */
+        gettimeofday(&start,0);
     }
 
+    MPI_Bcast(&chunk_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-	/* End timing*/
-    gettimeofday(&finish,0);
+    image_chunk = (uint8_t*)malloc(chunk_size*sizeof(uint8_t));
 
-    /* Print result */
-    t= (finish.tv_sec - start.tv_sec) + (double)(finish.tv_usec - start.tv_usec)
-    / 1000000.0;
-  	printf("Time elapsed %lf\n", t);
+    MPI_Scatter(image, chunk_size, MPI_CHAR, image_chunk, chunk_size, MPI_CHAR, 0, MPI_COMM_WORLD);
 
-	/* Write new jpeg file */
-	write_JPEG_file (argv[2], 90, image, *width, *height);
+    /* Compute RGB->HSV */
+    for (i = 0; i < chunk_size; i+=3) {
+        RGBtoHSV(image_chunk + i);
+    }
 
+    MPI_Gather(image_chunk, chunk_size, MPI_CHAR, image, chunk_size, MPI_CHAR, 0, MPI_COMM_WORLD);
 
-	printf("Simple terminated successfully \n");
+    if(rank == 0)
+    {
+        /* End timing*/
+        gettimeofday(&finish,0);
+
+        /* Print result */
+        t= (finish.tv_sec - start.tv_sec) + (double)(finish.tv_usec - start.tv_usec)
+        / 1000000.0;
+        printf("Time elapsed %lf\n", t);
+
+        /* Write new jpeg file */
+        write_JPEG_file (argv[2], 90, image, width, height);
+
+        printf("MPI terminated successfully \n");
+    }
+
+    MPI_Finalize();
 	return 0;
 }
