@@ -15,7 +15,9 @@
 #include <jpeglib.h>
 #include <math.h>
 #include <sys/time.h>
+#include <pthread.h>
 #include "jpeg_functions.h"
+
 
 #define MIN2(A,B)       ((A)<(B)?(A):(B))
 #define MIN(A,B,C)     (MIN2(MIN2((A),(B)),(C)))
@@ -71,29 +73,56 @@ void RGBtoHSV(uint8_t *src){
     src[2] = max;
 }
 
+int thread_work;
+
+void *thread_job(void *ptr)
+{
+    int j;
+    uint8_t *image_chunk = (uint8_t*)ptr;
+    for (j = 0; j < thread_work; j+=3)
+    {
+        RGBtoHSV(image_chunk + j);
+    }
+    return 0;
+}
+
 int main(int argc, char **argv){
 	/*==========  Variabile declarate  ==========*/
 	struct timeval start,finish;
     double t;
     uint8_t* image;
-    int *width,*height;
-    int i;
+    int width,height;
+    int *w,*h;
+    int i, numthreads;
+    pthread_t *threads;
 	/*-----  End of Variabile declarate  ------*/
-    width = malloc(sizeof(int));
-    height = malloc(sizeof(int));
+
+    /* Get number of threads */
+    numthreads = atoi(argv[1]);
+
+    w = malloc(sizeof(int));
+    h = malloc(sizeof(int));
 
 	/* Read jpeg file */
-    image = read_JPEG_file(argv[1], height, width);
+    image = read_JPEG_file(argv[2], h, w);
+    width = *w; free(w);
+    height = *h; free(h);
 
     /* Start timing */
 	gettimeofday(&start,0);
 
+    threads = (pthread_t*)malloc(numthreads * sizeof(pthread_t));
+    thread_work = width * height * 3 / numthreads;
 
-    /* Compute RGB->HSV */
-    for (i = 0; i < *width * *height; i++) {
-        RGBtoHSV(image + i * 3);
+    /* Create Pthreads */
+    for(i = 0; i < numthreads; i++){
+        pthread_create( threads + i, NULL, thread_job, image+i*thread_work);
     }
 
+    /* Join Pthreads */
+    for (i = 0; i < numthreads; i++){
+        pthread_join(threads[i], NULL);
+    }
 
 	/* End timing*/
     gettimeofday(&finish,0);
@@ -104,9 +133,9 @@ int main(int argc, char **argv){
   	printf("Time elapsed %lf\n", t);
 
 	/* Write new jpeg file */
-	write_JPEG_file (argv[2], 90, image, *width, *height);
+	write_JPEG_file (argv[3], 90, image, width, height);
 
 
-	printf("Simple terminated successfully \n");
+	printf("Pthreads terminated successfully \n");
 	return 0;
 }
