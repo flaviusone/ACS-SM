@@ -2,7 +2,7 @@
 *
 * Author: Flavius Tirnacop
 * Grupa: 341C1
-* Fisier: serial.c
+* Fisier: simple.c
 * Descriere: Implementare seriala transformare RGB->HSV
 *
 **/
@@ -25,58 +25,51 @@
 
 /*-----  End of Includes & Defines  ------*/
 
-#define EPSILON 0.02
+void RGBtoHSV(uint8_t *src){
+	float min, max, delta;
+	float r, g, b, h, s, v;
 
-static int minf(uint8_t a, uint8_t b, uint8_t c) {
-    if ((a < b) && (a < c)) {
-        return a;
-    } else if ((b < a) && (b < c)) {
-        return b;
-    } else {
-        return c;
+	r = src[0];
+	g = src[1];
+	b = src[2];
+
+	min = MIN(src[0], src[1], src[2]);
+    max = MAX(src[0], src[1], src[2]);
+
+    delta = max - min;
+
+	/* Valoarea pentru V */
+    v = max;
+
+    if(max != 0)
+    {
+    	/* Valoarea pentru S */
+    	s = delta / max;
     }
-}
-
-static int maxf(uint8_t a, uint8_t b, uint8_t c) {
-    if ((a > b) && (a > c)) {
-        return a;
-    } else if ((b > a) && (b > c)) {
-        return b;
-    } else {
-        return c;
-    }
-}
-
-
-static void RGBtoHSV(uint8_t * src) {
-    uint8_t min, max;
-    float max2;
-    float delta;
-    float h;
-
-    min = minf(src[0], src[1], src[2]);
-    max = maxf(src[0], src[1], src[2]);
-
-    max2 = max + EPSILON;
-
-    delta = max2 - min;
-
-    if (src[0] == max)
-        h = (src[1] - src[2]) / delta;
-    else if (src[1] == max)
-        h = 2 + (src[2] - src[0]) / delta;
     else
-        h = 4 + (src[0] - src[1]) / delta;
+    {
+    	/* r = g = b = 0 */
+    	s = 0;
+    	h = -1;
+    	src[0] = h; src[1] = s; src[2] = v;
+    	return;
+    }
+
+    if(r == max)
+    	h = (g - b) / delta;
+    else if(g == max)
+    	h = 2 + (b - r) / delta;
+    else
+    	h = 4 + (r - g) / delta;
 
     h *= 60;
-    if (h < 0)
-        h += 360;
+    if(h < 0)
+    	h += 360;
 
     src[0] = (h / 360.) * 255;
-    src[1] = delta * 255 / max2;
+    src[1] = delta * 255 / max;
     src[2] = max;
 }
-
 
 int main(int argc, char **argv){
 	/*==========  Variabile declarate  ==========*/
@@ -96,7 +89,7 @@ int main(int argc, char **argv){
 	gettimeofday(&start,0);
 
 
-    /* TODO - compute RGB->HSV */
+    /* Compute RGB->HSV */
     for (i = 0; i < *width * *height; i++) {
         RGBtoHSV(image + i * 3);
     }
