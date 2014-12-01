@@ -2,7 +2,7 @@
 *
 * Author: Flavius Tirnacop
 * Grupa: 341C1
-* Fisier: simple.c
+* Fisier: hibrid.c
 * Descriere: Implementare seriala transformare RGB->HSV
 *
 **/
@@ -15,6 +15,7 @@
 #include <jpeglib.h>
 #include <math.h>
 #include <sys/time.h>
+#include <omp.h>
 #include "mpi.h"
 #include "jpeg_functions.h"
 
@@ -119,6 +120,7 @@ int main(int argc, char **argv){
     MPI_Scatter(image, chunk_size, MPI_CHAR, image_chunk, chunk_size, MPI_CHAR, 0, MPI_COMM_WORLD);
 
     /* Compute RGB->HSV */
+    #pragma omp parallel for
     for (i = 0; i < chunk_size; i+=3) {
         RGBtoHSV(image_chunk + i);
     }
@@ -139,7 +141,7 @@ int main(int argc, char **argv){
         /* Write new jpeg file */
         write_JPEG_file (argv[2], 90, image, width, height);
 
-        printf("MPI terminated successfully \n");
+        printf("HIBRID terminated successfully \n");
     }
 
     MPI_Finalize();

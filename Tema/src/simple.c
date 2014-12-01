@@ -15,7 +15,6 @@
 #include <jpeglib.h>
 #include <math.h>
 #include <sys/time.h>
-#include <omp.h>
 #include "jpeg_functions.h"
 
 
@@ -96,7 +95,6 @@ int main(int argc, char **argv){
 
 
     /* Compute RGB->HSV */
-    #pragma omp parallel for schedule(guided)
     for (i = 0; i < width * height; i++) {
         RGBtoHSV(image + i * 3);
     }
