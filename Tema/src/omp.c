@@ -2,8 +2,8 @@
 *
 * Author: Flavius Tirnacop
 * Grupa: 341C1
-* Fisier: simple.c
-* Descriere: Implementare seriala transformare RGB->HSV
+* Fisier: omp.c
+* Descriere: Implementare paralela cu OpenMP transformare RGB->HSV
 *
 **/
 
@@ -83,11 +83,14 @@ int main(int argc, char **argv){
     int i;
 	/*-----  End of Variabile declarate  ------*/
 
+    /* Citire number of threads */
+    omp_set_num_threads(atoi(argv[1]));
+
     w = malloc(sizeof(int));
     h = malloc(sizeof(int));
 
 	/* Read jpeg file */
-    image = read_JPEG_file(argv[1], h, w);
+    image = read_JPEG_file(argv[2], h, w);
     width = *w; free(w);
     height = *h; free(h);
 
@@ -111,9 +114,9 @@ int main(int argc, char **argv){
   	printf("Time elapsed %lf\n", t);
 
 	/* Write new jpeg file */
-	write_JPEG_file (argv[2], 90, image, width, height);
+	write_JPEG_file (argv[3], 90, image, width, height);
 
 
-	printf("Simple terminated successfully \n");
+	printf("Omp terminated successfully \n");
 	return 0;
 }

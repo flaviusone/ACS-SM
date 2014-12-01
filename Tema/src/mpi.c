@@ -15,9 +15,7 @@
 #include <jpeglib.h>
 #include <math.h>
 #include <sys/time.h>
-#include <omp.h>
 #include "jpeg_functions.h"
-
 
 #define MIN2(A,B)       ((A)<(B)?(A):(B))
 #define MIN(A,B,C)     (MIN2(MIN2((A),(B)),(C)))
@@ -78,26 +76,21 @@ int main(int argc, char **argv){
 	struct timeval start,finish;
     double t;
     uint8_t* image;
-    int width,height;
-    int *w,*h;
+    int *width,*height;
     int i;
 	/*-----  End of Variabile declarate  ------*/
-
-    w = malloc(sizeof(int));
-    h = malloc(sizeof(int));
+    width = malloc(sizeof(int));
+    height = malloc(sizeof(int));
 
 	/* Read jpeg file */
-    image = read_JPEG_file(argv[1], h, w);
-    width = *w; free(w);
-    height = *h; free(h);
+    image = read_JPEG_file(argv[1], height, width);
 
     /* Start timing */
 	gettimeofday(&start,0);
 
 
     /* Compute RGB->HSV */
-    #pragma omp parallel for schedule(guided)
-    for (i = 0; i < width * height; i++) {
+    for (i = 0; i < *width * *height; i++) {
         RGBtoHSV(image + i * 3);
     }
 
@@ -111,7 +104,7 @@ int main(int argc, char **argv){
   	printf("Time elapsed %lf\n", t);
 
 	/* Write new jpeg file */
-	write_JPEG_file (argv[2], 90, image, width, height);
+	write_JPEG_file (argv[2], 90, image, *width, *height);
 
 
 	printf("Simple terminated successfully \n");
