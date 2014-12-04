@@ -31,7 +31,7 @@ echo -e "\nRunning test 1 - pthreads...\n"
 
 echo -e "\nRunning test 1 - hibrid...\n"
 # mpirun -n 10 ./$HIBRID_OUTPUT inputs/uther_small.jpg out/uther_small_HSV_MPI_HIBRID.jpg
-mpirun -n 10 ./$HIBRID_OUTPUT inputs/nasa_world.jpg out/nasa_world_HSV_HIBRID.jpg
+mpirun -np 10 ./$HIBRID_OUTPUT inputs/nasa_world.jpg out/nasa_world_HSV_HIBRID.jpg
 
 echo -e "\nDone running tests"
 make clean
