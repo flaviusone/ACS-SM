@@ -1,0 +1,34 @@
+# Running test 2 - Omp on large file multiple threads
+Time elapsed 14.273214
+Omp terminated successfully 
+Time elapsed 6.990380
+Omp terminated successfully 
+Time elapsed 3.544276
+Omp terminated successfully 
+Time elapsed 2.345994
+Omp terminated successfully 
+Time elapsed 1.768387
+Omp terminated successfully 
+Time elapsed 1.390602
+Omp terminated successfully 
+# Running test 2 - Omp on large file multiple threads
+1 13.513164
+2 6.787100
+4 3.405558
+6 2.268196
+8 1.713746
+16 1.397869
+# Running test 2 - Omp on large file multiple threads
+1 13.573392
+2 6.765278
+4 3.621125
+6 2.286903
+8 1.715807
+16 1.363037
+# Running test 2 - Omp on large file multiple threads
+1 14.351295
+2 6.815165
+4 3.508968
+6 2.261161
+8 1.754880
+16 1.368688
