@@ -133,12 +133,12 @@ int main(int argc, char **argv){
         /* Print result */
         t= (finish.tv_sec - start.tv_sec) + (double)(finish.tv_usec - start.tv_usec)
         / 1000000.0;
-        printf("Time elapsed %lf\n", t);
+        printf("%d %lf\n", numtasks, t);
 
         /* Write new jpeg file */
         write_JPEG_file (argv[2], 90, image, width, height);
 
-        printf("MPI terminated successfully \n");
+        // printf("MPI terminated successfully \n");
     }
 
     MPI_Finalize();
