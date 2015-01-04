@@ -1,4 +1,10 @@
 #!/bin/bash
+rm simple
+rm omp
+rm pthreads
+rm mpi
+rm hibrid
+
 echo "Running all experiments"
 qsub -cwd -q ibm-opteron.q simple.sh
 qsub -cwd -q ibm-opteron.q omp.sh
