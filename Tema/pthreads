@@ -1,34 +1,7 @@
 # Running test 4 - Pthreads on large file multiple threads
-Time elapsed 13.845186
-Pthreads terminated successfully 
-Time elapsed 7.249958
-Pthreads terminated successfully 
-Time elapsed 3.629058
-Pthreads terminated successfully 
-Time elapsed 2.334067
-Pthreads terminated successfully 
-Time elapsed 1.829086
-Pthreads terminated successfully 
-Time elapsed 1.394027
-Pthreads terminated successfully 
-# Running test 4 - Pthreads on large file multiple threads
-1 13.743552
-2 6.881477
-4 3.637574
-6 2.317962
-8 1.818043
-16 1.397273
-# Running test 4 - Pthreads on large file multiple threads
-1 13.746395
-2 7.212806
-4 3.611543
-6 2.318511
-8 1.816078
-16 1.392319
-# Running test 4 - Pthreads on large file multiple threads
-1 13.743835
-2 7.231106
-4 3.471572
-6 2.317826
-8 1.836660
-16 1.398296
+1 13.751842
+2 7.176681
+4 3.615745
+6 2.318204
+8 1.814045
+16 1.374170
