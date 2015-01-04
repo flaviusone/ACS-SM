@@ -98,7 +98,7 @@ int main(int argc, char **argv){
 
 
     /* Compute RGB->HSV */
-    #pragma omp parallel for schedule(guided)
+    #pragma omp parallel for schedule(static)
     for (i = 0; i < width * height; i++) {
         RGBtoHSV(image + i * 3);
     }
@@ -110,12 +110,12 @@ int main(int argc, char **argv){
     /* Print result */
     t= (finish.tv_sec - start.tv_sec) + (double)(finish.tv_usec - start.tv_usec)
     / 1000000.0;
-  	printf("Time elapsed %lf\n", t);
+  	printf("%d %lf\n", atoi(argv[1]), t);
 
 	/* Write new jpeg file */
 	write_JPEG_file (argv[3], 90, image, width, height);
 
 
-	printf("Omp terminated successfully \n");
+	// printf("Omp terminated successfully \n");
 	return 0;
 }
